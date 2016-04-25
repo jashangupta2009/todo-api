@@ -1,19 +1,11 @@
 var express = require('express');
 var app = express();
 var PORT = process.env.PORT || 3000;
-var todos = [{
-    id: 1,
-    description: "Visit shiv mandir",
-    completed: false
-}, {
-    id: 2,
-    description: "Purchase stuff",
-    completed: false
-}, {
-    id: 3,
-    description: "Learn node.js",
-    completed: true
-}];
+var todos = [];
+var todoNextId = 1;
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 //home page
 app.get('/', function(req, res) {
@@ -41,6 +33,17 @@ app.get('/todos/:id', function(req, res) {
     if(match) {
         res.status(404).send();
     }
+});
+
+//POST /todos
+app.post('/todos', function(req, res) {
+        var body = req.body;
+         
+        body.id = todoNextId;
+        todos.push(body);
+        todoNextId++;
+
+        res.json(todos);
 });
 
 //listening to the port
